@@ -57,9 +57,10 @@
   @keyframes pulse { 0%,100% { box-shadow: 0 0 0 0 rgba(58,53,48,0.12); } 50% { box-shadow: 0 0 0 8px rgba(58,53,48,0); } }
 
   @media (max-width: 768px) {
-    .split { flex-direction: column; height: auto; overflow: auto; }
+    html, body { overflow: auto; height: auto; }
+    .split { flex-direction: column; height: auto; overflow: visible; }
     .hero-panel { height: 55vh; flex: none; }
-    .content-panel { padding: 2rem 1.2rem 2.5rem; max-width: 100%; overflow: visible; }
+    .content-panel { padding: 2rem 1.2rem 2.5rem; max-width: 100%; overflow: visible; justify-content: flex-start; }
     header h1 { font-size: 1.15rem; }
     .poem-en { font-size: 0.82rem; }
     .slideshow { aspect-ratio: 3/4; }
@@ -74,7 +75,7 @@
   <span class="start-text">轻触进入</span>
 </div>
 
-<div class="split" id="main-content" style="display:none">
+<div class="split" id="main-content" style="display:none" class="split-main">
   <div class="hero-panel">
     <img src="shangshang-fuji.jpg" alt="">
   </div>
