@@ -112,9 +112,11 @@
 <script>
 var photos=["shangshang-first.jpg","shangshang-fourth.jpg","shangshang-second.jpg","shangshang-third.jpg","shangshang-fuji2.jpg","shangshang-ricoh.jpg","shangshang-sigma.jpg"];
 
-var a=new Audio('satie.mp3');a.loop=true;a.volume=0.5;
+var a=document.createElement('audio');a.src='satie.mp3';a.preload='auto';a.loop=true;a.volume=0.5;
 a.addEventListener('ended',function(){a.currentTime=0;a.play()});
+a.addEventListener('error',function(){console.log('audio error')});
 document.body.appendChild(a);
+a.load();
 
 var mb=document.getElementById('music-btn');var playing=false;
 
