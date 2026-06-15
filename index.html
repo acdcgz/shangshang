@@ -47,7 +47,8 @@
     .content-panel { padding: 2rem 1.2rem 3rem; max-width: 100%; }
     header h1 { font-size: 1.15rem; }
     .poem-en { font-size: 0.82rem; }
-    .film-frame { width: 100% !important; aspect-ratio: 3/4 !important; }
+    .film-frame { flex: 0 0 100% !important; width: 100% !important; min-width: 100% !important; aspect-ratio: 4/3 !important; }
+    .film-strip { scroll-snap-type: x mandatory !important; overflow-x: auto; }
     .film-reel { padding: 16px 0 12px; }
     .film-reel::before { height: 16px; }
     .film-reel::after { height: 12px; }
@@ -143,9 +144,9 @@
   }
   .film-strip::-webkit-scrollbar { display: none; }
   .film-frame {
-    flex: 0 0 100%; width: 100%; height: auto;
+    flex: 0 0 100%; width: 100%; min-width: 100%; height: auto;
     aspect-ratio: 4/3;
-    scroll-snap-align: center;
+    scroll-snap-align: center; scroll-snap-stop: always;
     overflow: hidden;
     position: relative;
   }
