@@ -47,8 +47,9 @@
     header h1 { font-size: 1.15rem; }
     .poem-en { font-size: 0.82rem; }
     .film-frame { width: 100% !important; aspect-ratio: 3/4 !important; }
-    .film-reel { padding: 14px 0; }
-    .film-reel::before, .film-reel::after { height: 14px; }
+    .film-reel { padding: 16px 0 12px; }
+    .film-reel::before { height: 16px; }
+    .film-reel::after { height: 12px; }
     .start-overlay .start-text { font-size: 1rem; }
     .music-btn { bottom: 1rem; right: 1rem; }
   }
@@ -66,33 +67,69 @@
   .slideshow-wrap { margin-top: 1.8rem; overflow: hidden; }
   .film-reel {
     position: relative;
-    background: linear-gradient(180deg, #3d3228 0%, #2a231c 50%, #3d3228 100%);
-    border-radius: 2px;
-    padding: 20px 0;
+    background: #1a1512;
+    padding: 22px 0 18px;
     overflow: hidden;
-    box-shadow: inset 0 0 30px rgba(0,0,0,0.3);
+    border-radius: 2px;
+    box-shadow:
+      inset 0 0 60px rgba(0,0,0,0.5),
+      0 2px 8px rgba(0,0,0,0.3);
   }
+  /* Top sprockets - slightly uneven */
   .film-reel::before {
     content: '';
-    position: absolute; top: 0; left: -4px; right: -4px; height: 20px;
+    position: absolute; top: 0; left: 0; right: 0; height: 22px;
+    z-index: 3; pointer-events: none;
     background:
       repeating-linear-gradient(90deg,
-        transparent 0px, transparent 10px,
-        #1a1510 10px, #1a1510 14px
-      ),
-      linear-gradient(180deg, #4a3d30 0%, #3d3228 40%, #2a231c 100%);
-    z-index: 2; pointer-events: none;
+        transparent 0px, transparent 11px,
+        #0d0a08 11px, #0d0a08 15px,
+        transparent 15px, transparent 18px,
+        #0d0a08 18px, #0d0a08 22px,
+        transparent 22px, transparent 29px,
+        #0d0a08 29px, #0d0a08 33px
+      );
+    opacity: 0.85;
+    mask-image: linear-gradient(180deg, #000 0%, #000 60%, transparent 100%);
+    -webkit-mask-image: linear-gradient(180deg, #000 0%, #000 60%, transparent 100%);
   }
+  /* Bottom sprockets */
   .film-reel::after {
     content: '';
-    position: absolute; bottom: 0; left: -4px; right: -4px; height: 20px;
+    position: absolute; bottom: 0; left: 0; right: 0; height: 18px;
+    z-index: 3; pointer-events: none;
     background:
       repeating-linear-gradient(90deg,
-        transparent 0px, transparent 10px,
-        #1a1510 10px, #1a1510 14px
-      ),
-      linear-gradient(0deg, #4a3d30 0%, #3d3228 40%, #2a231c 100%);
-    z-index: 2; pointer-events: none;
+        transparent 0px, transparent 13px,
+        #0d0a08 13px, #0d0a08 17px,
+        transparent 17px, transparent 20px,
+        #0d0a08 20px, #0d0a08 24px,
+        transparent 24px, transparent 31px,
+        #0d0a08 31px, #0d0a08 35px
+      );
+    opacity: 0.8;
+    mask-image: linear-gradient(0deg, #000 0%, #000 60%, transparent 100%);
+    -webkit-mask-image: linear-gradient(0deg, #000 0%, #000 60%, transparent 100%);
+  }
+  /* Grain overlay */
+  .film-grain {
+    position: absolute; inset: 0; z-index: 2; pointer-events: none;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)' opacity='0.06'/%3E%3C/svg%3E");
+    background-size: 200px 200px;
+    opacity: 0.5; mix-blend-mode: overlay;
+  }
+  /* Scratches */
+  .film-scratches {
+    position: absolute; inset: 0; z-index: 2; pointer-events: none;
+    background:
+      linear-gradient(180deg, transparent 0%, transparent 30%, rgba(255,255,255,0.02) 30%, transparent 31%,
+        transparent 55%, rgba(255,255,255,0.015) 55%, transparent 56%,
+        transparent 78%, rgba(255,255,255,0.02) 78%, transparent 79%);
+    animation: scratchMove 8s linear infinite;
+  }
+  @keyframes scratchMove {
+    0% { background-position: 0 0; }
+    100% { background-position: 0 200px; }
   }
   .film-strip {
     display: flex; gap: 0;
@@ -101,6 +138,7 @@
     scroll-snap-type: x mandatory;
     -webkit-overflow-scrolling: touch;
     scrollbar-width: none; -ms-overflow-style: none;
+    margin: 0 3px;
   }
   .film-strip::-webkit-scrollbar { display: none; }
   .film-frame {
@@ -108,15 +146,22 @@
     aspect-ratio: 4/3;
     scroll-snap-align: center;
     overflow: hidden;
-    box-shadow: 0 0 0 2px #1a1510, 0 0 0 4px #3d3228;
+    position: relative;
+  }
+  .film-frame::after {
+    content: '';
+    position: absolute; inset: 0; z-index: 1; pointer-events: none;
+    box-shadow: inset 0 0 40px rgba(0,0,0,0.3), inset 0 0 8px rgba(255,220,180,0.05);
   }
   .film-frame img {
     width: 100%; height: 100%;
     object-fit: cover;
-    filter: sepia(0.1) contrast(0.92) brightness(0.95);
-    transition: filter 0.4s ease;
+    filter: sepia(0.15) contrast(0.9) brightness(0.9) saturate(0.85);
+    transition: filter 0.5s ease;
   }
-  .film-frame:hover img { filter: sepia(0) contrast(1) brightness(1); }
+  .film-frame:hover img {
+    filter: sepia(0.05) contrast(1) brightness(1) saturate(1);
+  }
   .film-nav {
     display: flex; justify-content: center; gap: 1rem;
     margin-top: 0.8rem;
@@ -171,7 +216,7 @@
       <div class="sep-line"></div>
 
       <div class="slideshow-wrap" id="ss-wrap" style="display:none">
-        <div class="film-reel"><div class="film-strip" id="film-strip"></div></div>
+        <div class="film-reel"><div class="film-grain"></div><div class="film-scratches"></div><div class="film-strip" id="film-strip"></div></div>
         <div class="film-nav">
           <button onclick="filmPrev()">←</button>
           <button onclick="filmNext()">→</button>
