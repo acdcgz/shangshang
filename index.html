@@ -6,7 +6,6 @@
 <title>上上</title>
 <style>
   *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-  html, body { height: 100%; overflow: hidden; }
   body { background: #f7f4ef; color: #4a4540; font-family: -apple-system, "PingFang SC", "Noto Sans SC", sans-serif; line-height: 1.7; -webkit-font-smoothing: antialiased; }
 
   /* ── Start overlay ── */
@@ -18,22 +17,39 @@
   }
   .start-overlay.hidden { opacity: 0; pointer-events: none; }
   .start-overlay .start-text {
-    font-size: 1.1rem; color: #a09890; letter-spacing: 0.08em;
-    animation: breathe 2.5s ease-in-out infinite;
+    font-size: 1.1rem; color: #6a6560; letter-spacing: 0.1em;
+    animation: breathe 2s ease-in-out infinite;
+    border-bottom: 1px solid #d0cbc4; padding-bottom: 0.5rem;
   }
-  @keyframes breathe { 0%,100% { opacity: 0.4; } 50% { opacity: 1; } }
+  @keyframes breathe { 0%,100% { opacity: 0.5; } 50% { opacity: 1; } }
 
-  /* ── Split layout ── */
-  .split { display: flex; height: 100vh; overflow: hidden; }
+  /* ── Main content ── */
+  #main-content { display: none; }
 
-  .hero-panel { flex: 1; position: relative; overflow: hidden; background: #ebe6de; }
-  .hero-panel img { width: 100%; height: 100%; object-fit: cover; }
-
-  .content-panel {
-    flex: 1; max-width: 520px; padding: 4rem 2.5rem 3rem;
-    overflow-y: auto; display: flex; flex-direction: column; justify-content: center;
+  /* Desktop: split layout */
+  @media (min-width: 769px) {
+    html, body { height: 100%; overflow: hidden; }
+    .split-desktop { display: flex; height: 100vh; overflow: hidden; }
+    .hero-panel { flex: 1; overflow: hidden; background: #ebe6de; }
+    .hero-panel img { width: 100%; height: 100%; object-fit: cover; }
+    .content-panel { flex: 1; max-width: 520px; padding: 4rem 2.5rem 3rem; overflow-y: auto; display: flex; flex-direction: column; justify-content: center; }
   }
 
+  /* Mobile: stacked layout */
+  @media (max-width: 768px) {
+    html, body { height: auto; overflow: auto; }
+    .split-desktop { display: block; }
+    .hero-panel { height: 50vh; overflow: hidden; background: #ebe6de; }
+    .hero-panel img { width: 100%; height: 100%; object-fit: cover; }
+    .content-panel { padding: 2rem 1.2rem 3rem; max-width: 100%; }
+    header h1 { font-size: 1.15rem; }
+    .poem-en { font-size: 0.82rem; }
+    .slideshow { aspect-ratio: 3/4; }
+    .start-overlay .start-text { font-size: 1rem; }
+    .music-btn { bottom: 1rem; right: 1rem; }
+  }
+
+  /* ── Shared ── */
   header { margin-bottom: 1.8rem; }
   header h1 { font-size: 1.3rem; font-weight: 500; color: #3a3530; letter-spacing: 0.06em; margin-bottom: 0.2rem; }
   header .dates { font-size: 0.8rem; color: #9a948e; letter-spacing: 0.06em; }
@@ -55,47 +71,37 @@
   .music-btn:hover { border-color: #4a4540; color: #4a4540; }
   .music-btn.playing { border-color: #4a4540; color: #3a3530; animation: pulse 3s ease-in-out infinite; }
   @keyframes pulse { 0%,100% { box-shadow: 0 0 0 0 rgba(58,53,48,0.12); } 50% { box-shadow: 0 0 0 8px rgba(58,53,48,0); } }
-
-  @media (max-width: 768px) {
-    html, body { overflow: auto; height: auto; }
-    .split { flex-direction: column; height: auto; overflow: visible; }
-    .hero-panel { height: 55vh; flex: none; }
-    .content-panel { padding: 2rem 1.2rem 2.5rem; max-width: 100%; overflow: visible; justify-content: flex-start; }
-    header h1 { font-size: 1.15rem; }
-    .poem-en { font-size: 0.82rem; }
-    .slideshow { aspect-ratio: 3/4; }
-    .start-overlay .start-text { font-size: 1rem; }
-  }
 </style>
 </head>
 <body>
 
-<!-- Start overlay - tap anywhere to begin -->
 <div class="start-overlay" id="start-overlay">
   <span class="start-text">轻触进入</span>
 </div>
 
-<div class="split" id="main-content" style="display:none" class="split-main">
-  <div class="hero-panel">
-    <img src="shangshang-fuji.jpg" alt="">
-  </div>
-
-  <div class="content-panel">
-    <header>
-      <h1>上上</h1>
-      <p class="dates">2007.6.27 – 2026.6.15</p>
-    </header>
-    <div class="sep-line"></div>
-    <div class="note">
-      <p class="poem-en">The light, it doesn't stay.<br>It comes and goes.<br>That is you.<br>That is you.</p>
-      <p class="poem-attr">&mdash; W.S. Merwin, <em>Rain Light</em></p>
+<div id="main-content">
+  <div class="split-desktop">
+    <div class="hero-panel">
+      <img src="shangshang-fuji.jpg" alt="">
     </div>
-    <div class="sep-line"></div>
 
-    <div class="slideshow-wrap" id="ss-wrap" style="display:none">
-      <div class="slideshow" id="slideshow">
-        <span class="slide-nav slide-prev"></span>
-        <span class="slide-nav slide-next"></span>
+    <div class="content-panel">
+      <header>
+        <h1>上上</h1>
+        <p class="dates">2007.6.27 – 2026.6.15</p>
+      </header>
+      <div class="sep-line"></div>
+      <div class="note">
+        <p class="poem-en">The light, it doesn't stay.<br>It comes and goes.<br>That is you.<br>That is you.</p>
+        <p class="poem-attr">&mdash; W.S. Merwin, <em>Rain Light</em></p>
+      </div>
+      <div class="sep-line"></div>
+
+      <div class="slideshow-wrap" id="ss-wrap" style="display:none">
+        <div class="slideshow" id="slideshow">
+          <span class="slide-nav slide-prev"></span>
+          <span class="slide-nav slide-next"></span>
+        </div>
       </div>
     </div>
   </div>
@@ -110,20 +116,14 @@ var a=new Audio('satie.mp3');a.loop=true;a.volume=0.5;
 a.addEventListener('ended',function(){a.currentTime=0;a.play()});
 document.body.appendChild(a);
 
-var mb=document.getElementById('music-btn');
-var playing=false;
+var mb=document.getElementById('music-btn');var playing=false;
 
 function startAll() {
   document.getElementById('start-overlay').classList.add('hidden');
-  document.getElementById('main-content').style.display='flex';
-  a.play().then(function(){
-    mb.classList.add('playing');playing=true;
-  }).catch(function(){});
+  document.getElementById('main-content').style.display='block';
+  a.play().then(function(){mb.classList.add('playing');playing=true}).catch(function(){});
   initSlideshow();
-  setTimeout(function(){
-    var el=document.getElementById('start-overlay');
-    if(el)el.remove();
-  },800);
+  setTimeout(function(){var el=document.getElementById('start-overlay');if(el)el.remove()},800);
 }
 
 document.getElementById('start-overlay').addEventListener('click', startAll);
