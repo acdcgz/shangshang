@@ -32,8 +32,8 @@
   @media (min-width: 769px) {
     html, body { height: 100%; overflow: hidden; }
     .split-desktop { display: flex; height: 100vh; overflow: hidden; }
-    .hero-panel { flex: 1; overflow: hidden; background: #ebe6de; }
-    .hero-panel img { width: 100%; height: 100%; object-fit: cover; }
+    .hero-panel { flex: 1; overflow: hidden; background: #ebe6de; padding: 2rem; display: flex; align-items: center; justify-content: center; }
+    .hero-panel img { max-width: 100%; max-height: 100%; object-fit: contain; border-radius: 3px; box-shadow: 0 2px 16px rgba(0,0,0,0.06); }
     .content-panel { flex: 1; max-width: 520px; padding: 4rem 2.5rem 3rem; overflow-y: auto; display: flex; flex-direction: column; justify-content: center; }
   }
 
@@ -41,8 +41,8 @@
   @media (max-width: 768px) {
     html, body { height: auto; overflow: auto; }
     .split-desktop { display: block; }
-    .hero-panel { height: 50vh; overflow: hidden; background: #ebe6de; }
-    .hero-panel img { width: 100%; height: 100%; object-fit: cover; }
+    .hero-panel { height: 50vh; overflow: hidden; background: #ebe6de; padding: 1.2rem; display: flex; align-items: center; justify-content: center; }
+    .hero-panel img { max-width: 100%; max-height: 100%; object-fit: contain; border-radius: 3px; }
     .content-panel { padding: 2rem 1.2rem 3rem; max-width: 100%; }
     header h1 { font-size: 1.15rem; }
     .poem-en { font-size: 0.82rem; }
