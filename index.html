@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="preload" as="image" href="shangshang-fuji.jpg">
 <title>上上</title>
 <style>
   *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
@@ -231,11 +232,13 @@
 <script>
 var photos=["shangshang-first.jpg","shangshang-fourth.jpg","shangshang-second.jpg","shangshang-third.jpg","shangshang-fuji2.jpg","shangshang-ricoh.jpg","shangshang-sigma.jpg","shangshang-canon2.jpg","shangshang-canon3.jpg","shangshang-canon4.jpg","shangshang-canon5.jpg","shangshang-wx1.jpg"];
 
-var a=document.createElement('audio');a.src='satie.mp3';a.preload='auto';a.loop=true;a.volume=0.5;
-a.addEventListener('ended',function(){a.currentTime=0;a.play()});
-a.addEventListener('error',function(){console.log('audio error')});
-document.body.appendChild(a);
-a.load();
+var a=null;
+function initAudio(){
+  if(a)return;
+  a=document.createElement('audio');a.src='satie.mp3';a.preload='auto';a.loop=true;a.volume=0.5;
+  a.addEventListener('ended',function(){a.currentTime=0;a.play()});
+  document.body.appendChild(a);a.load();
+}
 
 var mb=document.getElementById('music-btn');var playing=false;
 
@@ -243,7 +246,7 @@ function startAll() {
   document.getElementById('start-overlay').classList.add('hidden');
   document.getElementById('main-content').style.display='block';
   initSlideshow();
-  a.load();
+  initAudio();
   var playPromise=a.play();
   if(playPromise!==undefined){
     playPromise.then(function(){mb.classList.add('playing');playing=true}).catch(function(e){
@@ -259,6 +262,7 @@ document.getElementById('start-overlay').addEventListener('click', startAll);
 document.getElementById('start-overlay').addEventListener('touchend', function(e){e.preventDefault();startAll()});
 
 mb.addEventListener('click',function(){
+  if(!a){initAudio()}
   if(playing){a.pause();mb.classList.remove('playing');playing=false}
   else{a.play();mb.classList.add('playing');playing=true}
 });
