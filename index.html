@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>上上</title>
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; }
+  body { background: #f7f4ef; color: #4a4540; font-family: -apple-system, "PingFang SC", "Noto Sans SC", sans-serif; line-height: 1.7; -webkit-font-smoothing: antialiased; }
+  .container { max-width: 720px; margin: 0 auto; padding: 5rem 1.5rem 4rem; }
+
+  header { text-align: center; margin-bottom: 2rem; }
+  header h1 { font-size: 1.4rem; font-weight: 500; color: #3a3530; letter-spacing: 0.06em; margin-bottom: 0.3rem; }
+  header .dates { font-size: 0.85rem; color: #9a948e; letter-spacing: 0.06em; }
+  .sep-line { width: 40px; height: 1px; background: #d0cbc4; margin: 0 auto; }
+
+  .photo { max-width: 720px; margin: 0 auto 1.8rem; border-radius: 6px; overflow: hidden; background: #ebe6de; }
+  .photo img { display: block; width: 100%; height: auto; opacity: 0; transition: opacity 0.5s ease; }
+  .photo img.loaded { opacity: 1; }
+
+  .note { text-align: center; max-width: 420px; margin: 3rem auto 4rem; }
+  .poem-en { font-family: "Times New Roman", "Georgia", "Songti SC", serif; font-style: italic; font-size: 0.95rem; color: #5a5550; line-height: 2.4; letter-spacing: 0.03em; }
+  .poem-attr { font-size: 0.8rem; color: #b0aaa4; margin-top: 1.5rem; }
+
+  .slideshow-wrap { position: relative; max-width: 900px; margin: 0 auto 2rem; }
+  .slideshow { position: relative; aspect-ratio: 3/2; border-radius: 6px; overflow: hidden; background: #ebe6de; cursor: pointer; }
+  .slideshow img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; opacity: 0; transition: opacity 0.8s ease; }
+  .slideshow img.active { opacity: 1; z-index: 1; }
+  .slide-nav { position: absolute; top: 50%; transform: translateY(-50%); z-index: 10; width: 40px; height: 40px; border-radius: 50%; border: 1px solid rgba(180,175,168,0.4); background: rgba(247,244,239,0.7); color: #a09890; font-size: 1.2rem; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.3s ease; backdrop-filter: blur(4px); }
+  .slide-nav:hover { border-color: #4a4540; color: #4a4540; background: rgba(247,244,239,0.95); }
+  .slide-prev { left: 0.75rem; } .slide-next { right: 0.75rem; }
+
+  .music-btn { position: fixed; bottom: 1.5rem; right: 2rem; z-index: 100; width: 40px; height: 40px; border-radius: 50%; border: 1px solid #d0cbc4; background: rgba(247,244,239,0.92); color: #b0aaa4; font-size: 0.8rem; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.3s ease; backdrop-filter: blur(6px); }
+  .music-btn:hover { border-color: #4a4540; color: #4a4540; }
+  .music-btn.playing { border-color: #4a4540; color: #3a3530; animation: pulse 3s ease-in-out infinite; }
+  @keyframes pulse { 0%,100% { box-shadow: 0 0 0 0 rgba(58,53,48,0.12); } 50% { box-shadow: 0 0 0 8px rgba(58,53,48,0); } }
+
+  @media (max-width: 480px) { .container { padding: 3rem 1rem 3rem; } header h1 { font-size: 1.2rem; } .poem-en { font-size: 0.9rem; } .music-btn { bottom: 1rem; right: 1rem; } .slideshow { aspect-ratio: 4/3; } }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <div class="photo"><img src="shangshang-fuji.jpg" id="hero-img"></div>
+  <header><h1>上上</h1><p class="dates">2007.6.27 – 2026.6.15</p></header>
+  <div class="sep-line"></div>
+
+  
+
+  <div class="note">
+    <p class="poem-en">The light, it doesn't stay.<br>It comes and goes.<br>That is you.<br>That is you.</p>
+    <p class="poem-attr">&mdash; W.S. Merwin, <em>Rain Light</em></p>
+  </div>
+
+  <div class="sep-line"></div>
+
+  <div class="slideshow-wrap" id="ss-wrap" style="display:none">
+    <div class="slideshow" id="slideshow">
+      <span class="slide-nav slide-prev"></span>
+      <span class="slide-nav slide-next"></span>
+    </div>
+  </div>
+
+</div>
+
+<button class="music-btn" id="music-btn" title="音乐">♪</button>
+
+<script>
+var photos=["shangshang-first.jpg","shangshang-fourth.jpg","shangshang-second.jpg","shangshang-third.jpg","shangshang-fuji2.jpg","shangshang-ricoh.jpg"].map(function(f){return f});
+
+// Lazy load early photos
+
+
+// Music
+var mr=false,mo=false,mb=document.getElementById('music-btn');
+function sm(){var a=document.createElement('audio');a.id='yt';a.src='satie.mp3';a.loop=true;a.volume=0.6;a.play();a.addEventListener('ended',function(){a.currentTime=0;a.play()});document.body.appendChild(a);mb.classList.add('playing');mr=mo=true}
+mb.addEventListener('click',function(){if(!mr){sm();return}var a=document.getElementById('yt');if(mo){a.pause();mb.classList.remove('playing')}else{a.play();mb.classList.add('playing')}mo=!mo});
+var hi=document.getElementById("hero-img");if(hi){hi.onload=function(){hi.classList.add("loaded")}};
+document.addEventListener('click',function o(){if(!mr)sm()},{once:true});
+
+// Slideshow
+if(photos.length>0){
+  var ss=document.getElementById('slideshow'),wrap=document.getElementById('ss-wrap'),idx=0;
+  wrap.style.display='block';
+  photos.forEach(function(src,i){
+    var img=document.createElement('img');img.src=src;img.alt='';img.loading=i<3?'eager':'lazy';
+    if(i===0)img.classList.add('active');ss.appendChild(img);
+  });
+  var imgs=ss.querySelectorAll('img');
+  function go(i){imgs[idx].classList.remove('active');idx=i;imgs[idx].classList.add('active')}
+  function prev(){go((idx-1+photos.length)%photos.length)}
+  function next(){go((idx+1)%photos.length)}
+  ss.querySelector('.slide-prev').onclick=function(e){e.stopPropagation();prev()};
+  ss.querySelector('.slide-next').onclick=function(e){e.stopPropagation();next()};
+  var hi=document.getElementById("hero-img");if(hi){hi.onload=function(){hi.classList.add("loaded")}};
+document.addEventListener('keydown',function(e){if(e.key==='ArrowLeft')prev();if(e.key==='ArrowRight')next()});
+  var autoplay=setInterval(function(){next()},4000);ss.addEventListener('mouseenter',function(){clearInterval(autoplay)});ss.addEventListener('mouseleave',function(){autoplay=setInterval(function(){next()},4000)});var tx=0;ss.addEventListener('touchstart',function(e){tx=e.touches[0].clientX});ss.addEventListener('touchend',function(e){var dx=tx-e.changedTouches[0].clientX;if(Math.abs(dx)>50){if(dx>0)next();else prev()}});
+}
+</script>
+</body>
+</html>
