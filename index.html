@@ -16,7 +16,7 @@
   .sep-line { width: 40px; height: 1px; background: #d0cbc4; margin: 0 auto; }
 
   .photo { max-width: 720px; margin: 0 auto 1.8rem; border-radius: 6px; overflow: hidden; background: #ebe6de; }
-  .photo img { display: block; width: 100%; height: auto; opacity: 0; transition: opacity 0.5s ease; }
+  .photo img { display: block; width: 100%; height: auto; max-height: 85vh; object-fit: contain; opacity: 0; transition: opacity 0.5s ease; }
   .photo img.loaded { opacity: 1; }
 
   .note { text-align: center; max-width: 420px; margin: 3rem auto 4rem; }
@@ -36,7 +36,21 @@
   .music-btn.playing { border-color: #4a4540; color: #3a3530; animation: pulse 3s ease-in-out infinite; }
   @keyframes pulse { 0%,100% { box-shadow: 0 0 0 0 rgba(58,53,48,0.12); } 50% { box-shadow: 0 0 0 8px rgba(58,53,48,0); } }
 
-  @media (max-width: 480px) { .container { padding: 3rem 1rem 3rem; } header h1 { font-size: 1.2rem; } .poem-en { font-size: 0.9rem; } .music-btn { bottom: 1rem; right: 1rem; } .slideshow { aspect-ratio: 4/3; } }
+  @media (max-width: 640px) {
+    .container { padding: 2.5rem 0.75rem 2rem; }
+    header h1 { font-size: 1.2rem; }
+    header .dates { font-size: 0.8rem; }
+    .photo { max-width: 100%; margin-bottom: 1.2rem; border-radius: 3px; }
+    .note { margin: 2rem auto 3rem; }
+    .note .poem-en { font-size: 0.85rem; line-height: 2.2; }
+    .note .poem-attr { font-size: 0.75rem; }
+    .slideshow { aspect-ratio: 3/4; border-radius: 3px; }
+    .slideshow img { object-fit: cover; }
+    .slideshow-wrap { margin: 0 0 1rem; }
+    .slide-nav { width: 32px; height: 32px; font-size: 1rem; }
+    .slide-prev { left: 0.5rem; } .slide-next { right: 0.5rem; }
+    .music-btn { bottom: 1rem; right: 1rem; width: 36px; height: 36px; font-size: 0.75rem; }
+}
 </style>
 </head>
 <body>
