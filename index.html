@@ -44,7 +44,7 @@
     .content-panel { padding: 2rem 1.2rem 3rem; max-width: 100%; }
     header h1 { font-size: 1.15rem; }
     .poem-en { font-size: 0.82rem; }
-    .slideshow { aspect-ratio: 3/4; }
+    .film-frame { width: 180px; height: 180px; }
     .start-overlay .start-text { font-size: 1rem; }
     .music-btn { bottom: 1rem; right: 1rem; }
   }
@@ -59,13 +59,55 @@
   .poem-en { font-family: "Times New Roman", "Georgia", "Songti SC", serif; font-style: italic; font-size: 0.9rem; color: #5a5550; line-height: 2.3; letter-spacing: 0.03em; }
   .poem-attr { font-size: 0.75rem; color: #b0aaa4; margin-top: 1rem; }
 
-  .slideshow-wrap { margin-top: 1.8rem; }
-  .slideshow { position: relative; aspect-ratio: 4/3; border-radius: 4px; overflow: hidden; background: #ebe6de; cursor: pointer; }
-  .slideshow img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity 0.8s ease; }
-  .slideshow img.active { opacity: 1; z-index: 1; }
-  .slide-nav { position: absolute; top: 50%; transform: translateY(-50%); z-index: 10; width: 32px; height: 32px; border-radius: 50%; border: 1px solid rgba(180,175,168,0.4); background: rgba(247,244,239,0.7); color: #a09890; font-size: 1rem; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.3s ease; }
-  .slide-nav:hover { border-color: #4a4540; color: #4a4540; }
-  .slide-prev { left: 0.5rem; } .slide-next { right: 0.5rem; }
+  .slideshow-wrap { margin-top: 1.8rem; overflow: hidden; }
+  .film-strip {
+    display: flex; gap: 0;
+    padding: 16px 0;
+    background: #2a2520;
+    border-top: 3px solid #1a1815; border-bottom: 3px solid #1a1815;
+    position: relative;
+    overflow-x: auto; scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none; -ms-overflow-style: none;
+  }
+  .film-strip::-webkit-scrollbar { display: none; }
+  .film-strip::before, .film-strip::after {
+    content: '';
+    position: absolute; left: 0; right: 0; height: 12px;
+    background: repeating-linear-gradient(
+      90deg,
+      transparent, transparent 14px,
+      #1a1815 14px, #1a1815 18px
+    );
+  }
+  .film-strip::before { top: 0; }
+  .film-strip::after { bottom: 0; }
+  .film-frame {
+    flex: 0 0 auto; width: 240px; height: 240px;
+    scroll-snap-align: center;
+    margin: 0 3px;
+    overflow: hidden; background: #1a1815;
+    border-radius: 1px;
+  }
+  .film-frame img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    filter: sepia(0.08) contrast(0.95);
+    transition: filter 0.3s;
+  }
+  .film-frame:hover img { filter: sepia(0) contrast(1); }
+  .film-nav {
+    display: flex; justify-content: center; gap: 1rem;
+    margin-top: 0.8rem;
+  }
+  .film-nav button {
+    background: none; border: 1px solid #d0cbc4;
+    color: #a09890; font-size: 0.9rem; cursor: pointer;
+    padding: 4px 14px; border-radius: 2px;
+    transition: all 0.3s ease;
+    font-family: inherit;
+  }
+  .film-nav button:hover { border-color: #4a4540; color: #4a4540; }
 
   .music-btn { position: fixed; bottom: 1.5rem; right: 2rem; z-index: 100; width: 36px; height: 36px; border-radius: 50%; border: 1px solid #d0cbc4; background: rgba(247,244,239,0.92); color: #b0aaa4; font-size: 0.75rem; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.3s ease; backdrop-filter: blur(6px); }
   .music-btn:hover { border-color: #4a4540; color: #4a4540; }
@@ -98,9 +140,10 @@
       <div class="sep-line"></div>
 
       <div class="slideshow-wrap" id="ss-wrap" style="display:none">
-        <div class="slideshow" id="slideshow">
-          <span class="slide-nav slide-prev"></span>
-          <span class="slide-nav slide-next"></span>
+        <div class="film-strip" id="film-strip"></div>
+        <div class="film-nav">
+          <button onclick="filmPrev()">←</button>
+          <button onclick="filmNext()">→</button>
         </div>
       </div>
     </div>
@@ -123,8 +166,16 @@ var mb=document.getElementById('music-btn');var playing=false;
 function startAll() {
   document.getElementById('start-overlay').classList.add('hidden');
   document.getElementById('main-content').style.display='block';
-  a.play().then(function(){mb.classList.add('playing');playing=true}).catch(function(){});
   initSlideshow();
+  a.load();
+  var playPromise=a.play();
+  if(playPromise!==undefined){
+    playPromise.then(function(){mb.classList.add('playing');playing=true}).catch(function(e){
+      console.log('play failed:',e);
+      // Retry after short delay
+      setTimeout(function(){a.play().then(function(){mb.classList.add('playing');playing=true}).catch(function(){})},300);
+    });
+  }
   setTimeout(function(){var el=document.getElementById('start-overlay');if(el)el.remove()},800);
 }
 
@@ -138,23 +189,32 @@ mb.addEventListener('click',function(){
 
 function initSlideshow(){
   if(!photos.length)return;
-  var ss=document.getElementById('slideshow'),wrap=document.getElementById('ss-wrap'),idx=0;
+  var strip=document.getElementById('film-strip'),wrap=document.getElementById('ss-wrap');
   wrap.style.display='block';
   photos.forEach(function(src,i){
+    var frame=document.createElement('div');frame.className='film-frame';
     var img=document.createElement('img');img.src=src;img.loading=i<3?'eager':'lazy';
-    if(i===0)img.classList.add('active');ss.appendChild(img);
+    frame.appendChild(img);strip.appendChild(frame);
   });
-  var imgs=ss.querySelectorAll('img');
-  function go(i){imgs[idx].classList.remove('active');idx=i;imgs[idx].classList.add('active')}
-  function prev(){go((idx-1+photos.length)%photos.length)}
-  function next(){go((idx+1)%photos.length)}
-  ss.querySelector('.slide-prev').onclick=function(e){e.stopPropagation();prev()};
-  ss.querySelector('.slide-next').onclick=function(e){e.stopPropagation();next()};
-  var ap=setInterval(function(){next()},4000);
-  ss.addEventListener('mouseenter',function(){clearInterval(ap)});
-  ss.addEventListener('mouseleave',function(){ap=setInterval(function(){next()},4000)});
-  document.addEventListener('keydown',function(e){if(e.key==='ArrowLeft')prev();if(e.key==='ArrowRight')next()});
-  var tx=0;ss.addEventListener('touchstart',function(e){tx=e.touches[0].clientX});ss.addEventListener('touchend',function(e){var dx=tx-e.changedTouches[0].clientX;if(Math.abs(dx)>50){if(dx>0)next();else prev()}});
+  // Auto-scroll
+  var ap=setInterval(function(){filmNext()},3500);
+  strip.addEventListener('mouseenter',function(){clearInterval(ap)});
+  strip.addEventListener('mouseleave',function(){ap=setInterval(function(){filmNext()},3500)});
+  document.addEventListener('keydown',function(e){if(e.key==='ArrowLeft')filmPrev();if(e.key==='ArrowRight')filmNext()});
+}
+
+var filmIdx=0;
+function filmPrev(){
+  var strip=document.getElementById('film-strip');if(!strip)return;
+  filmIdx=Math.max(0,filmIdx-1);
+  var frame=strip.children[filmIdx];
+  if(frame)frame.scrollIntoView({behavior:'smooth',block:'nearest',inline:'center'});
+}
+function filmNext(){
+  var strip=document.getElementById('film-strip');if(!strip)return;
+  filmIdx=(filmIdx+1)%photos.length;
+  var frame=strip.children[filmIdx];
+  if(frame)frame.scrollIntoView({behavior:'smooth',block:'nearest',inline:'center'});
 }
 </script>
 </body>
