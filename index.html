@@ -22,6 +22,8 @@
     border-bottom: 1px solid #d0cbc4; padding-bottom: 0.5rem;
   }
   @keyframes breathe { 0%,100% { opacity: 0.5; } 50% { opacity: 1; } }
+  .cat-icon { margin-top: 1.2rem; animation: catBounce 2s ease-in-out infinite; }
+  @keyframes catBounce { 0%,100% { transform: translateY(0); opacity: 0.4; } 50% { transform: translateY(-4px); opacity: 0.9; } }
 
   /* ── Main content ── */
   #main-content { display: none; }
@@ -119,6 +121,16 @@
 
 <div class="start-overlay" id="start-overlay">
   <span class="start-text">In Memoriam</span>
+  <div class="cat-icon">
+    <svg width="24" height="20" viewBox="0 0 24 20">
+      <path d="M12 2C8 2 6 6 4 6C2 6 2 8 3 9C4 10 5 10 6 9L7 16C7 17 8 18 9 18L12 17L15 18C16 18 17 17 17 16L18 9C19 10 20 10 21 9C22 8 22 6 20 6C18 6 16 2 12 2Z" fill="none" stroke="#a09890" stroke-width="1.2"/>
+      <circle cx="9" cy="8" r="1" fill="#a09890"/>
+      <circle cx="14" cy="8" r="1" fill="#a09890"/>
+      <path d="M11 12L10 13L11 14" fill="none" stroke="#a09890" stroke-width="0.8"/>
+      <path d="M13 12L14 13L13 14" fill="none" stroke="#a09890" stroke-width="0.8"/>
+      <path d="M12 17V18M12 18H3M12 18H21" fill="none" stroke="#a09890" stroke-width="0.6" opacity="0.3"/>
+    </svg>
+  </div>
 </div>
 
 <div id="main-content">
