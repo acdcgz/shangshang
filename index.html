@@ -274,7 +274,7 @@ function initSlideshow(){
   wrap.style.display='block';
   photos.forEach(function(src,i){
     var frame=document.createElement('div');frame.className='film-frame';
-    var img=document.createElement('img');img.src=src;img.loading=i<3?'eager':'lazy';
+    var img=document.createElement('img');img.src=src;img.loading='eager';
     frame.appendChild(img);strip.appendChild(frame);
   });
   // Auto-scroll
