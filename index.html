@@ -34,6 +34,7 @@
   .music-btn { position: fixed; bottom: 1.5rem; right: 2rem; z-index: 100; width: 40px; height: 40px; border-radius: 50%; border: 1px solid #d0cbc4; background: rgba(247,244,239,0.92); color: #b0aaa4; font-size: 0.8rem; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.3s ease; backdrop-filter: blur(6px); }
   .music-btn:hover { border-color: #4a4540; color: #4a4540; }
   .music-btn.playing { border-color: #4a4540; color: #3a3530; animation: pulse 3s ease-in-out infinite; }
+  .music-btn.waiting { border-color: #c0bab4; color: #9a948e; animation: pulse 1.5s ease-in-out infinite; }
   @keyframes pulse { 0%,100% { box-shadow: 0 0 0 0 rgba(58,53,48,0.12); } 50% { box-shadow: 0 0 0 8px rgba(58,53,48,0); } }
 
   @media (max-width: 640px) {
