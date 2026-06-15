@@ -277,6 +277,10 @@ function initSlideshow(){
     var img=document.createElement('img');img.src=src;img.loading='eager';
     frame.appendChild(img);strip.appendChild(frame);
   });
+  // Clone first photo at end for seamless loop
+  var clone=document.createElement('div');clone.className='film-frame';
+  var cloneImg=document.createElement('img');cloneImg.src=photos[0];cloneImg.loading='eager';
+  clone.appendChild(cloneImg);strip.appendChild(clone);
   // Auto-scroll
   var ap=setInterval(function(){filmNext()},4500);
   strip.addEventListener('mouseenter',function(){clearInterval(ap)});
@@ -308,7 +312,15 @@ function filmPrev(){
 }
 function filmNext(){
   var s=document.getElementById('film-strip');if(!s)return;
-  filmIdx=(filmIdx+1)%photos.length;
+  filmIdx++;
+  // Reached the clone - jump back to start
+  if(filmIdx>=photos.length){
+    s.scrollTo({left:0,behavior:'instant'});
+    filmIdx=0;
+    // Small delay then continue
+    setTimeout(function(){filmIdx=1;if(s.children[1])smoothScrollTo(s.children[1].offsetLeft)},500);
+    return;
+  }
   var f=s.children[filmIdx];
   if(f)smoothScrollTo(f.offsetLeft);
 }
