@@ -463,14 +463,15 @@ function loadFirebaseSDK() {
 function initFirebase() {
   try {
     firebase.initializeApp(fbConfig);
+    gbDb = firebase.firestore();
+    // Load messages immediately — reads don't need auth
+    loadMessages();
+    // Sign in anonymously in background — only needed for writes
     firebase.auth().signInAnonymously().then(function() {
-      gbDb = firebase.firestore();
       gbReady = true;
-      loadMessages();
     }).catch(function(e) {
-      document.getElementById('gb-msgs').innerHTML =
-        '<div class="gb-empty">留言板暂不可用</div>';
       console.error('Firebase auth error:', e);
+      // Writes won't work but reading already works
     });
   } catch(e) {
     document.getElementById('gb-msgs').innerHTML =
@@ -524,9 +525,34 @@ function gbSend() {
     errEl.style.display = 'block';
     return;
   }
-  if (!gbReady || !gbDb) {
+  if (!gbDb) {
     errEl.textContent = '留言板未就绪，请稍后再试';
     errEl.style.display = 'block';
+    return;
+  }
+  // If auth isn't ready yet, wait for it
+  if (!gbReady) {
+    errEl.textContent = '正在连接，请稍后再点发送';
+    errEl.style.display = 'block';
+    btn.disabled = true;
+    // Wait for auth to complete, then retry
+    var checkInterval = setInterval(function() {
+      if (gbReady) {
+        clearInterval(checkInterval);
+        btn.disabled = false;
+        errEl.style.display = 'none';
+        gbSend();
+      }
+    }, 500);
+    // Timeout after 10 seconds
+    setTimeout(function() {
+      clearInterval(checkInterval);
+      if (!gbReady) {
+        btn.disabled = false;
+        errEl.textContent = '连接超时，请刷新页面后重试';
+        errEl.style.display = 'block';
+      }
+    }, 10000);
     return;
   }
   // Rate limit: 30 seconds
